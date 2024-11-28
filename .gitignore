@@ -1,4 +1,6 @@
 .env
-node_modules
 logs.txt
 products.db
+
+node_modules/
+daemon/
