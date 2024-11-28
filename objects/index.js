@@ -1,4 +1,4 @@
-import DiscordBot from "./DiscordBot";
-import Memory from "./Memory";
+import DiscordBot from "./DiscordBot.js";
+import Memory from "./Memory.js";
 
 export { DiscordBot, Memory };
