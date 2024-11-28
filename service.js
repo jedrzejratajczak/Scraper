@@ -10,18 +10,16 @@ const svc = new Service({
   script: path.join(__dirname, "index.js"),
 });
 
-svc.on("uninstall", () => {
-  svc.install();
-});
-
 svc.on("install", () => {
   svc.start();
 });
 
-svc.exists((exists) => {
-  if (exists) {
-    svc.uninstall();
-  } else {
-    svc.install();
-  }
+svc.on("alreadyinstalled", () => {
+  svc.uninstall();
 });
+
+svc.on("uninstall", () => {
+  svc.install();
+});
+
+svc.install();
