@@ -1,16 +1,19 @@
-import { Client, GatewayIntentBits } from "discord.js";
+import { Client, Events, GatewayIntentBits } from "discord.js";
 import { chunkArray, makeEmbed } from "../utils/index.js";
 
 class DiscordBot {
   constructor(config) {
     this.client = new Client({ intents: [GatewayIntentBits.Guilds] });
+    this.client.login(process.env.DISCORD_TOKEN);
     this.channels = {};
 
-    Object.entries(config).forEach(([key, { channel }]) => {
-      this.channels[key] = this.client.channels.cache.get(channel);
-    });
+    this.client.once(Events.ClientReady, (readyClient) => {
+      Object.entries(config).forEach(([key, { channel }]) => {
+        this.channels[key] = this.client.channels.cache.get(channel);
+      });
 
-    this.client.login(process.env.DISCORD_TOKEN);
+      console.log(`Ready! Logged in as ${readyClient.user.tag}`);
+    });
   }
 
   async sendProducts(key, products) {

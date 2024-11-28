@@ -51,5 +51,3 @@ Object.entries(config).forEach(([key, { cron, url, scrapper }]) => {
     })
   );
 });
-
-console.log("Bot is running");
