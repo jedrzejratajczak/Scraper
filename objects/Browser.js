@@ -1,9 +1,8 @@
 import puppeteer from "puppeteer";
 
-const setupBrowser = async (url) => {
-  let browser;
-  try {
-    browser = await puppeteer.launch({
+class Browser {
+  async setup() {
+    this.browser = await puppeteer.launch({
       headless: true,
       args: [
         "--disable-extensions",
@@ -20,13 +19,14 @@ const setupBrowser = async (url) => {
         "--disable-features=site-per-process",
       ],
     });
+  }
 
-    const timer = setTimeout(async () => {
-      if (browser && browser.connected) await browser.close();
-    }, 300000);
-    browser.on("disconnected", () => clearTimeout(timer));
+  async openPage(url) {
+    if (!this.browser) {
+      await setup();
+    }
 
-    const page = await browser.newPage();
+    const page = await this.browser.newPage();
 
     await page.setUserAgent(
       "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36"
@@ -44,11 +44,12 @@ const setupBrowser = async (url) => {
     await page.goto(url);
     await page.setViewport({ width: 1600, height: 900 });
 
-    return { page, browser };
-  } catch (error) {
-    if (browser) await browser.close();
-    throw error;
+    return page;
   }
-};
 
-export default setupBrowser;
+  async closePage(page) {
+    await page.close();
+  }
+}
+
+export default Browser;

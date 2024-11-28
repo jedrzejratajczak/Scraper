@@ -1,7 +1,7 @@
 import "dotenv/config";
 import nodeCron from "node-cron";
 
-import { DiscordBot, Memory } from "./objects/index.js";
+import { Browser, DiscordBot, Memory } from "./objects/index.js";
 import { errorHandlerWrapper } from "./utils/index.js";
 import scrap, { scrapA, scrapE, scrapG, scrapVC } from "./scrappers/index.js";
 
@@ -46,12 +46,15 @@ const config = {
 
 const bot = new DiscordBot(config);
 const memory = new Memory();
+const browser = new Browser();
 
 Object.entries(config).forEach(([key, { cron, url, scrapper }]) => {
   nodeCron.schedule(
     cron,
     errorHandlerWrapper(async () => {
-      const products = await scrap(url, scrapper);
+      const page = await browser.openPage(url);
+      const products = await scrap(page, scrapper);
+      await browser.closePage(page);
       const newProducts = await memory.updateProducts(key, products);
       await bot.sendProducts(key, newProducts);
     })
