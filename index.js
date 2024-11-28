@@ -3,7 +3,7 @@ import nodeCron from "node-cron";
 
 import { DiscordBot, Memory } from "./objects/index.js";
 import { errorHandlerWrapper } from "./utils/index.js";
-import scrap, { scrapE, scrapG, scrapVC } from "./scrappers/index.js";
+import scrap, { scrapA, scrapE, scrapG, scrapVC } from "./scrappers/index.js";
 
 const config = {
   e: {
@@ -29,6 +29,12 @@ const config = {
     cron: "4,9,14,19,24,29,34,39,44,49,54,59 * * * *",
     url: process.env.GB_URL,
     scrapper: scrapG,
+  },
+  a: {
+    channel: process.env.A_CHANNEL,
+    cron: "4,9,14,19,24,29,34,39,44,49,54,59 * * * *",
+    url: process.env.A_URL,
+    scrapper: scrapA,
   },
   vc: {
     channel: process.env.VC_CHANNEL,

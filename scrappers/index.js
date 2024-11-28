@@ -2,6 +2,7 @@ import { addLog, setupBrowser } from "../utils/index.js";
 import scrapE from "./scrapE.js";
 import scrapG from "./scrapG.js";
 import scrapVC from "./scrapVC.js";
+import scrapA from "./scrapA.js";
 
 const scrap = async (url, scrapper) => {
   const startTime = performance.now();
@@ -29,5 +30,5 @@ const scrap = async (url, scrapper) => {
   }
 };
 
-export { scrapE, scrapG, scrapVC };
+export { scrapE, scrapG, scrapVC, scrapA };
 export default scrap;
