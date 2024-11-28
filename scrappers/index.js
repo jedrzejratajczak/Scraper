@@ -1,4 +1,4 @@
-import { setupBrowser } from "../utils/index.js";
+import { addLog, setupBrowser } from "../utils/index.js";
 import scrapE from "./scrapE.js";
 import scrapG from "./scrapG.js";
 import scrapVC from "./scrapVC.js";
