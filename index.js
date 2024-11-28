@@ -8,31 +8,31 @@ import scrap, { scrapA, scrapE, scrapG, scrapVC } from "./scrappers/index.js";
 const config = {
   e: {
     channel: process.env.E_CHANNEL,
-    cron: "0/5 * * * *",
+    cron: "0 */5 * * * *",
     url: process.env.E_URL,
     scrapper: scrapE,
   },
   g: {
     channel: process.env.G_CHANNEL,
-    cron: "2/5 * * * *",
+    cron: "0 2-59/5 * * * *",
     url: process.env.G_URL,
     scrapper: scrapG,
   },
   ge: {
     channel: process.env.GE_CHANNEL,
-    cron: "0 4/5 * * * *",
+    cron: "0 4-59/5 * * * *",
     url: process.env.GE_URL,
     scrapper: scrapG,
   },
   gb: {
     channel: process.env.GB_CHANNEL,
-    cron: "20 4/5 * * * *",
+    cron: "20 4-59/5 * * * *",
     url: process.env.GB_URL,
     scrapper: scrapG,
   },
   a: {
     channel: process.env.A_CHANNEL,
-    cron: "40 4/5 * * * *",
+    cron: "40 4-59/5 * * * *",
     url: process.env.A_URL,
     scrapper: scrapA,
   },
