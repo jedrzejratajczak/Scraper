@@ -23,7 +23,7 @@ class Browser {
 
   async openPage(url) {
     if (!this.browser) {
-      await setup();
+      await this.setup();
     }
 
     const page = await this.browser.newPage();
