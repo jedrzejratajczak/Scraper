@@ -16,38 +16,38 @@ class Memory {
 
     await this.#db.exec(`
       CREATE TABLE IF NOT EXISTS products (
-        shop TEXT,
+        key TEXT,
         productId TEXT,
         src TEXT,
         price TEXT,
         title TEXT,
         href TEXT,
         timestamp INTEGER,
-        PRIMARY KEY (shop, productId)
+        PRIMARY KEY (key, productId)
       )
     `);
   }
 
-  async updateProducts(shop, products) {
+  async updateProducts(key, products) {
     const timestamp = Date.now();
     const twelveHoursAgo = timestamp - 12 * 60 * 60 * 1000;
     const newProducts = [];
 
     for (const product of products) {
       const existing = await this.#db.get(
-        "SELECT timestamp FROM products WHERE shop = ? AND productId = ?",
-        [shop, product.productId]
+        "SELECT timestamp FROM products WHERE key = ? AND productId = ?",
+        [key, product.productId]
       );
 
       await this.#db.run(
         `
-          INSERT INTO products (shop, productId, src, price, title, href, timestamp)
+          INSERT INTO products (key, productId, src, price, title, href, timestamp)
           VALUES (?, ?, ?, ?, ?, ?, ?)
-          ON CONFLICT(shop, productId) DO UPDATE SET
+          ON CONFLICT(key, productId) DO UPDATE SET
           src = ?, price = ?, title = ?, href = ?, timestamp = ?
         `,
         [
-          shop,
+          key,
           product.productId,
           product.src,
           product.price,

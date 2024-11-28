@@ -46,7 +46,7 @@ Object.entries(config).forEach(([key, { cron, url, scrapper }]) => {
     cron,
     errorHandlerWrapper(async () => {
       const products = await scrap(url, scrapper);
-      const newProducts = await memory.updateProducts(shop, products);
+      const newProducts = await memory.updateProducts(key, products);
       await bot.sendProducts(key, newProducts);
     })
   );
