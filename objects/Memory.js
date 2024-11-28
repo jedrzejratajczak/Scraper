@@ -10,7 +10,7 @@ class Memory {
 
   async #initDb() {
     this.#db = await open({
-      filename: "./data/products.db",
+      filename: "./products.db",
       driver: sqlite3.Database,
     });
 
