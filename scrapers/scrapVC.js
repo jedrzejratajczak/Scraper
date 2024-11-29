@@ -43,7 +43,7 @@ const fetchProducts = async (page) => {
     products.push({ src, price, title, productId, href });
   }
 
-  return products;
+  return products.filter((product) => product.productId);
 };
 
 const goToNextPage = () => false;

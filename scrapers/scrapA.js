@@ -31,7 +31,7 @@ const fetchProducts = async (page) => {
     })
   );
 
-  return products;
+  return products.filter((product) => product.productId);
 };
 
 const goToNextPage = () => false;

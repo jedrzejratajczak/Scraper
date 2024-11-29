@@ -1,4 +1,11 @@
-import { scrapA, scrapE, scrapG, scrapVC } from "./scrapers/index.js";
+import {
+  scrapA,
+  scrapE,
+  scrapG,
+  scrapH,
+  scrapT,
+  scrapVC,
+} from "./scrapers/index.js";
 
 const config = {
   e: {
@@ -12,6 +19,18 @@ const config = {
     cron: "2,7,12,17,22,27,32,37,42,47,52,57 * * * *",
     url: process.env.G_URL,
     scraper: scrapG,
+  },
+  h: {
+    channel: process.env.H_CHANNEL,
+    cron: "20 3,8,13,18,23,28,33,38,43,48,53,58 * * * *",
+    url: process.env.H_URL,
+    scraper: scrapH,
+  },
+  t: {
+    channel: process.env.T_CHANNEL,
+    cron: "40 3,8,13,18,23,28,33,38,43,48,53,58 * * * *",
+    url: process.env.T_URL,
+    scraper: scrapT,
   },
   ge: {
     channel: process.env.GE_CHANNEL,
