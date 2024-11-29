@@ -9,45 +9,33 @@ const acceptCookies = async (page) => {
 };
 
 const fetchProducts = async (page) => {
-  const itemsContainerSelector = await page.waitForSelector(
-    "div.search-content"
+  await page.waitForSelector("div.search-content div.search-list-item");
+  const items = await page.$$("div.search-content div.search-list-item");
+
+  /* prettier-ignore */
+  const products = await Promise.all(
+    items.map(async (item) => {
+      const [src, price, title, href, productId] = await Promise.all([
+        item
+          .$eval('img.lazy', img => img.getAttribute('lazy-img'))
+          .catch(() => undefined),
+        item
+          .$eval('div.price.ta-price-tile', el => el.getAttribute('content'))
+          .catch(() => undefined),
+        item
+          .$eval('h2.product-title a.seoTitle', el => el.getAttribute('title'))
+          .catch(() => undefined),
+        item
+          .$eval('a.img.seoImage', el => el.getAttribute('href'))
+          .catch(() => undefined),
+        item
+          .evaluate(el => el.getAttribute('data-product-id'))
+          .catch(() => undefined),
+      ]);
+
+      return { src, price, title, productId, href: `${process.env.E_BASE}${href}` };
+    })
   );
-  const items = await itemsContainerSelector.$$("div.search-list-item");
-
-  const products = [];
-
-  for (const item of items) {
-    const hasRibbonAdvertisement = await item.$(".ribbon--advertisement");
-    if (hasRibbonAdvertisement) {
-      continue;
-    }
-
-    const srcTag = await item.$("img.lazy");
-    const priceTag = await item.$("div.price");
-    const titleTag = await item.$("a.seoTitle");
-
-    const src = srcTag
-      ? await page.evaluate((img) => img.getAttribute("lazy-img"), srcTag)
-      : undefined;
-    const price = priceTag
-      ? await page.evaluate((price) => price.textContent.trim(), priceTag)
-      : undefined;
-    const title = titleTag
-      ? await page.evaluate((link) => link.title, titleTag)
-      : undefined;
-    const productId = titleTag
-      ? await page.evaluate((link) => link.dataset.productId, titleTag)
-      : undefined;
-    const href = titleTag
-      ? await page.evaluate((link) => link.href, titleTag)
-      : undefined;
-
-    if (!productId) {
-      continue;
-    }
-
-    products.push({ src, price, title, productId, href });
-  }
 
   return products.filter((product) => product.productId);
 };

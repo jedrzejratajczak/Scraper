@@ -48,7 +48,9 @@ class Browser {
   }
 
   async closePage(page) {
-    await page.close();
+    if (!page.isClosed()) {
+      await page.close();
+    }
   }
 
   async closeBrowser() {

@@ -4,7 +4,8 @@ const acceptCookies = async (page) => {
 };
 
 const fetchProducts = async (page) => {
-  const items = await page.$$(`.s-main-slot .s-widget-spacing-small`);
+  await page.waitForSelector(".s-main-slot .s-widget-spacing-small");
+  const items = await page.$$(".s-main-slot .s-widget-spacing-small");
 
   /* prettier-ignore */
   const products = await Promise.all(

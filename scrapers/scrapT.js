@@ -1,7 +1,8 @@
 const acceptCookies = () => null;
 
 const fetchProducts = async (page) => {
-  const items = await page.$$(`.products.row article.product-miniature`);
+  await page.waitForSelector(".products.row article.product-miniature");
+  const items = await page.$$(".products.row article.product-miniature");
 
   /* prettier-ignore */
   const products = await Promise.all(
@@ -21,7 +22,7 @@ const fetchProducts = async (page) => {
           .catch(() => undefined),
       ]);
 
-      return { src, price: null, title, productId, href };
+      return { src, price: undefined, title, productId, href };
     })
   );
 

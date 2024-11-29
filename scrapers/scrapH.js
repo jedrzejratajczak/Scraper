@@ -1,7 +1,8 @@
 const acceptCookies = () => null;
 
 const fetchProducts = async (page) => {
-  const items = await page.$$(`div.article.ng-scope div .line.ng-scope`);
+  await page.waitForSelector("div.article.ng-scope div.product-list");
+  const items = await page.$$("div.article.ng-scope div.product-list");
 
   /* prettier-ignore */
   const products = await Promise.all(
@@ -21,7 +22,7 @@ const fetchProducts = async (page) => {
           .catch(() => undefined),
       ]);
 
-      return { src, price: null, title, productId, href: `${process.env.H_BASE}${href}` };
+      return { src, price: undefined, title, productId, href: `${process.env.H_BASE}${href}` };
     })
   );
 

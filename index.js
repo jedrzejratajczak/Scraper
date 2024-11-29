@@ -26,6 +26,6 @@ Object.entries(config).forEach(([key, { cron, url, scraper }]) => {
         await bot.sendProducts(key, newProducts);
       },
       async () => await browser.closePage(page)
-    );
+    )();
   });
 });
