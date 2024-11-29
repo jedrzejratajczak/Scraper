@@ -18,7 +18,7 @@ class DiscordBot {
 
   async sendProducts(key, products) {
     const embeds = products.map((product) => makeEmbed(product));
-    const embedChunks = chunkArray(embeds, 10);
+    const embedChunks = chunkArray(embeds, 5);
     const channel = this.channels[key];
 
     await Promise.all(

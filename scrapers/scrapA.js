@@ -27,7 +27,7 @@ const fetchProducts = async (page) => {
           .catch(() => undefined),
       ]);
 
-      return { src, price, title, productId, href };
+      return { src, price, title, productId, href: `${process.env.A_BASE}${href}` };
     })
   );
 

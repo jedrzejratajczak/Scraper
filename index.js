@@ -11,14 +11,17 @@ const memory = new Memory();
 const browser = new Browser();
 
 Object.entries(config).forEach(([key, { cron, url, scraper }]) => {
-  nodeCron.schedule(
-    cron,
-    errorHandlerWrapper(async () => {
-      const page = await browser.openPage(url);
-      const products = await scrap(page, scraper);
-      await browser.closePage(page);
-      const newProducts = await memory.updateProducts(key, products);
-      await bot.sendProducts(key, newProducts);
-    }, browser.closeBrowser)
-  );
+  nodeCron.schedule(cron, async () => {
+    const page = await browser.openPage(url);
+
+    errorHandlerWrapper(
+      async () => {
+        const products = await scrap(page, scraper);
+        await browser.closePage(page);
+        const newProducts = await memory.updateProducts(key, products);
+        await bot.sendProducts(key, newProducts);
+      },
+      async () => await browser.closePage(page)
+    );
+  });
 });
