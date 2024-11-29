@@ -23,7 +23,7 @@ const fetchProducts = async (page) => {
           .$eval('a.a-link-normal.s-underline-text.s-underline-link-text.s-link-style.a-text-normal', el => el.getAttribute('href'))
           .catch(() => undefined),
         item
-          .$eval('.s-widget-spacing-small', el => el.getAttribute('data-uuid'))
+          .evaluate(el => el.getAttribute('data-uuid'))
           .catch(() => undefined),
       ]);
 

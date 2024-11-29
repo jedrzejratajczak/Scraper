@@ -3,8 +3,8 @@ import scrapG from "./scrapG.js";
 import scrapVC from "./scrapVC.js";
 import scrapA from "./scrapA.js";
 
-const scrap = async (page, scrapper) => {
-  const { acceptCookies, fetchProducts, goToNextPage } = scrapper;
+const scrap = async (page, scraper) => {
+  const { acceptCookies, fetchProducts, goToNextPage } = scraper;
 
   await acceptCookies(page);
 

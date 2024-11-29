@@ -50,6 +50,10 @@ class Browser {
   async closePage(page) {
     await page.close();
   }
+
+  async closeBrowser() {
+    await this.browser.close();
+  }
 }
 
 export default Browser;
