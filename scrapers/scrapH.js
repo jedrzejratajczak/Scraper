@@ -1,7 +1,4 @@
-const acceptCookies = async (page) => {
-  const acceptCookiesButton = await page.$("#sp-cc-accept");
-  if (acceptCookiesButton) await acceptCookiesButton.click();
-};
+const acceptCookies = () => null;
 
 const fetchProducts = async (page) => {
   const items = await page.$$(`div.article.ng-scope div .line.ng-scope`);
