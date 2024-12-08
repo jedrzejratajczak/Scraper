@@ -19,7 +19,9 @@ Object.entries(config).forEach(([key, { cron, url, scraper }]) => {
         const startTime = Date.now();
         const products = await scrap(page, scraper);
         const scrapTime = Date.now() - startTime;
-        addLog(`Scraped ${key} in ${scrapTime}ms`);
+        addLog(
+          `Scraped ${key} with ${products.length} products in ${scrapTime}ms`
+        );
 
         await browser.closePage(page);
         const newProducts = await memory.updateProducts(key, products);
