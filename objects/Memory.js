@@ -30,7 +30,7 @@ class Memory {
 
   async updateProducts(key, products) {
     const timestamp = Date.now();
-    const twentyfourHoursAgo = timestamp - 24 * 60 * 60 * 1000;
+    const delay = timestamp - 48 * 60 * 60 * 1000;
     const newProducts = [];
 
     for (const product of products) {
@@ -62,7 +62,7 @@ class Memory {
         ]
       );
 
-      if (!existing || existing.timestamp < twentyfourHoursAgo) {
+      if (!existing || existing.timestamp < delay) {
         newProducts.push(product);
       }
     }

@@ -52,7 +52,7 @@ const config = {
   },
   vc: {
     channel: process.env.VC_CHANNEL,
-    cron: "0 8,20 * * *",
+    cron: "0 0,6,12,18 * * *",
     url: process.env.VC_URL,
     scraper: scrapVC,
   },
