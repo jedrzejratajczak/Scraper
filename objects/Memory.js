@@ -1,4 +1,5 @@
 import sqlite3 from "sqlite3";
+import { promisify } from "util";
 
 class Memory {
   #db;
@@ -7,14 +8,11 @@ class Memory {
     this.#initDb();
   }
 
-  async #initDb() {
-    this.#db = await sqlite3.open({
-      filename: "./products.db",
-      driver: sqlite3.Database,
-    });
+  #initDb() {
+    this.#db = new sqlite3.Database("./products.db");
 
-    await this.#db.exec(`
-      CREATE TABLE IF NOT EXISTS products (
+    this.#db.run(
+      `CREATE TABLE IF NOT EXISTS products (
         key TEXT,
         productId TEXT,
         src TEXT,
@@ -23,8 +21,8 @@ class Memory {
         href TEXT,
         timestamp INTEGER,
         PRIMARY KEY (key, productId)
-      )
-    `);
+      )`
+    );
   }
 
   async updateProducts(key, products) {
@@ -32,13 +30,16 @@ class Memory {
     const delay = timestamp - 48 * 60 * 60 * 1000;
     const newProducts = [];
 
+    const dbGet = promisify(this.#db.get.bind(this.#db));
+    const dbRun = promisify(this.#db.run.bind(this.#db));
+
     for (const product of products) {
-      const existing = await this.#db.get(
+      const existing = await dbGet(
         "SELECT timestamp FROM products WHERE key = ? AND productId = ?",
         [key, product.productId]
       );
 
-      await this.#db.run(
+      await dbRun(
         `
           INSERT INTO products (key, productId, src, price, title, href, timestamp)
           VALUES (?, ?, ?, ?, ?, ?, ?)
