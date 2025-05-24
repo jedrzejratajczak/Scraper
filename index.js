@@ -1,4 +1,3 @@
-import "dotenv/config";
 import nodeCron from "node-cron";
 
 import { Browser, DiscordBot, Memory } from "./objects/index.js";

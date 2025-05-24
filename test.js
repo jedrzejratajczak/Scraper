@@ -1,5 +1,3 @@
-import "dotenv/config";
-
 import DiscordBot from "./objects/DiscordBot.js";
 import Browser from "./objects/Browser.js";
 import Memory from "./objects/Memory.js";
