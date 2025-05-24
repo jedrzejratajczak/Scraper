@@ -18,7 +18,7 @@ const fetchProducts = async (page) => {
           .$eval('span.a-price span.a-offscreen', el => el.innerText)
           .catch(() => undefined),
         item
-          .$eval('span.a-size-base-plus.a-color-base.a-text-normal', el => el.innerText)
+          .$eval('h2.a-size-base-plus.a-color-base.a-text-normal span', el => el.innerText)
           .catch(() => undefined),
         item
           .$eval('a.a-link-normal.s-underline-text.s-underline-link-text.s-link-style.a-text-normal', el => el.getAttribute('href'))
