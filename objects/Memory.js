@@ -1,5 +1,4 @@
 import sqlite3 from "sqlite3";
-import { open } from "sqlite";
 
 class Memory {
   #db;
@@ -9,7 +8,7 @@ class Memory {
   }
 
   async #initDb() {
-    this.#db = await open({
+    this.#db = await sqlite3.open({
       filename: "./products.db",
       driver: sqlite3.Database,
     });
