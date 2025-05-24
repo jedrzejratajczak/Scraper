@@ -5,6 +5,7 @@ import {
   scrapH,
   scrapT,
   scrapVC,
+  scrapX,
 } from "./scrapers/index.js";
 
 const config = {
@@ -55,6 +56,12 @@ const config = {
     cron: "0 0,6,12,18 * * *",
     url: process.env.VC_URL,
     scraper: scrapVC,
+  },
+  x: {
+    channel: process.env.X_CHANNEL,
+    cron: "20 2,7,12,17,22,27,32,37,42,47,52,57 * * * *",
+    url: process.env.X_URL,
+    scraper: scrapX,
   },
 };
 

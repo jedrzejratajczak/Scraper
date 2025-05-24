@@ -4,6 +4,7 @@ import scrapVC from "./scrapVC.js";
 import scrapA from "./scrapA.js";
 import scrapH from "./scrapH.js";
 import scrapT from "./scrapT.js";
+import scrapX from "./scrapX.js";
 
 const scrap = async (page, scraper) => {
   const { acceptCookies, fetchProducts, goToNextPage } = scraper;
@@ -23,5 +24,5 @@ const scrap = async (page, scraper) => {
   return products;
 };
 
-export { scrapE, scrapG, scrapVC, scrapA, scrapH, scrapT };
+export { scrapE, scrapG, scrapVC, scrapA, scrapH, scrapT, scrapX };
 export default scrap;
