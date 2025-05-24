@@ -1,10 +1,4 @@
-const acceptCookies = async (page) => {
-  const acceptCookiesButton = await page.$("consents-accept-necessary");
-
-  if (acceptCookiesButton) {
-    await acceptCookiesButton.click();
-  }
-};
+const acceptCookies = () => null;
 
 const fetchProducts = async (page) => {
   await page.waitForSelector("product-list product-tile");
@@ -21,7 +15,7 @@ const fetchProducts = async (page) => {
           .$eval('span.price__value', el => el.innerText.trim())
           .catch(() => undefined),
         item
-          .$eval('h2.product-tile__name', el => el.innerText.trim())
+          .$eval('h3.product-tile__name', el => el.innerText.trim())
           .catch(() => undefined),
         item
           .$eval('product-link a', el => el.getAttribute('href'))
