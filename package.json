@@ -4,7 +4,6 @@
   "dependencies": {
     "discord.js": "^14.19.3",
     "node-cron": "^4.0.7",
-    "pm2": "^6.0.6",
     "puppeteer": "^24.9.0",
     "sqlite3": "^5.1.7"
   },
