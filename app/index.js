@@ -33,7 +33,9 @@ while (true) {
     browser = new Browser();
 
     while (true) {
-      for (const [key, { url, scraper }] of Object.entries(config)) {
+      const configEntries = Object.entries(config).sort(() => Math.random() - 0.5);
+
+      for (const [key, { url, scraper }] of configEntries) {
         const page = await browser.openPage(url);
         const products = await scrap(page, scraper);
         await browser.closePage(page);
