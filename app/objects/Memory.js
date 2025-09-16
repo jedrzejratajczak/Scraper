@@ -1,5 +1,5 @@
-import sqlite3 from "sqlite3";
-import { promisify } from "util";
+import sqlite3 from 'sqlite3';
+import { promisify } from 'util';
 
 class Memory {
   #db;
@@ -9,7 +9,7 @@ class Memory {
   }
 
   #initDb() {
-    this.#db = new sqlite3.Database("./products.db");
+    this.#db = new sqlite3.Database('./products.db');
 
     this.#db.run(
       `CREATE TABLE IF NOT EXISTS products (
@@ -34,10 +34,10 @@ class Memory {
     const dbRun = promisify(this.#db.run.bind(this.#db));
 
     for (const product of products) {
-      const existing = await dbGet(
-        "SELECT timestamp FROM products WHERE key = ? AND productId = ?",
-        [key, product.productId]
-      );
+      const existing = await dbGet('SELECT timestamp FROM products WHERE key = ? AND productId = ?', [
+        key,
+        product.productId,
+      ]);
 
       await dbRun(
         `
@@ -68,6 +68,14 @@ class Memory {
     }
 
     return newProducts;
+  }
+
+  async close() {
+    try {
+      if (this.#db) {
+        this.#db.close();
+      }
+    } catch {}
   }
 }
 

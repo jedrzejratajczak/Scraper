@@ -2,14 +2,13 @@
   "name": "scraper",
   "main": "index.js",
   "dependencies": {
-    "discord.js": "^14.19.3",
-    "node-cron": "^4.0.7",
-    "puppeteer": "^24.9.0",
+    "discord.js": "^14.22.1",
+    "puppeteer": "^24.21.0",
     "sqlite3": "^5.1.7"
   },
   "devDependencies": {
-    "@eslint/js": "^9.27.0",
-    "eslint": "^9.27.0",
-    "globals": "^16.1.0"
+    "@eslint/js": "^9.35.0",
+    "eslint": "^9.35.0",
+    "globals": "^16.4.0"
   }
 }

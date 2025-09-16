@@ -1,5 +1,5 @@
-import { Client, Events, GatewayIntentBits } from "discord.js";
-import { chunkArray, makeEmbed } from "../utils/index.js";
+import { Client, Events, GatewayIntentBits } from 'discord.js';
+import { chunkArray, makeEmbed } from '../utils.js';
 
 class DiscordBot {
   constructor(config) {
@@ -21,9 +21,15 @@ class DiscordBot {
     const embedChunks = chunkArray(embeds, 5);
     const channel = this.channels[key];
 
-    await Promise.all(
-      embedChunks.map((chunk) => channel.send({ embeds: chunk }))
-    );
+    await Promise.all(embedChunks.map((chunk) => channel.send({ embeds: chunk })));
+  }
+
+  async destroy() {
+    try {
+      if (this.client) {
+        this.client.destroy();
+      }
+    } catch {}
   }
 }
 

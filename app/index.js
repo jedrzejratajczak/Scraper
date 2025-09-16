@@ -1,0 +1,56 @@
+import DiscordBot from './objects/DiscordBot.js';
+import Browser from './objects/Browser.js';
+import Memory from './objects/Memory.js';
+import config from './config.js';
+import { addLog } from './utils.js';
+
+const scrap = async (page, scraper) => {
+  const { acceptCookies, fetchProducts, goToNextPage } = scraper;
+
+  await acceptCookies(page);
+
+  const products = [];
+  let nextPageAvailable;
+
+  do {
+    const pageProducts = await fetchProducts(page);
+    products.push(...pageProducts);
+
+    nextPageAvailable = await goToNextPage(page);
+  } while (nextPageAvailable);
+
+  return products;
+};
+
+let bot = null;
+let memory = null;
+let browser = null;
+
+while (true) {
+  try {
+    bot = new DiscordBot(config);
+    memory = new Memory();
+    browser = new Browser();
+
+    while (true) {
+      for (const [key, { url, scraper }] of Object.entries(config)) {
+        const page = await browser.openPage(url);
+        const products = await scrap(page, scraper);
+        await browser.closePage(page);
+
+        const newProducts = await memory.updateProducts(key, products);
+        await bot.sendProducts(key, newProducts);
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, 60000));
+    }
+  } catch (error) {
+    await browser?.closeBrowser();
+    await bot?.destroy();
+    await memory?.close();
+
+    addLog(error);
+
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+  }
+}

@@ -1,10 +1,10 @@
 // import DiscordBot from "./objects/DiscordBot.js";
-import Browser from "./objects/Browser.js";
-import Memory from "./objects/Memory.js";
-import scrap from "./scrapers/index.js";
-import config from "./config.js";
+import Browser from '../objects/Browser.js';
+import Memory from '../objects/Memory.js';
+import scrap from './scrapers/index.js';
+import config from '../config.js';
 
-const chosenConfig = "x";
+const chosenConfig = 'x';
 
 // const bot = new DiscordBot(config);
 const browser = new Browser();

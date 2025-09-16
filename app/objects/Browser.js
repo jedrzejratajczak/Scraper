@@ -1,4 +1,4 @@
-import puppeteer from "puppeteer";
+import puppeteer from 'puppeteer';
 
 class Browser {
   constructor() {
@@ -9,18 +9,18 @@ class Browser {
     this.browser = await puppeteer.launch({
       headless: true,
       args: [
-        "--disable-extensions",
-        "--disable-gpu",
-        "--disable-software-rasterizer",
-        "--no-zygote",
-        "--disable-background-timers-throttling",
-        "--disable-renderer-backgrounding",
-        "--disable-backgrounding-occluded-windows",
-        "--disable-breakpad",
-        "--disable-sync",
-        "--no-sandbox",
-        "--disable-setuid-sandbox",
-        "--disable-features=site-per-process",
+        '--disable-extensions',
+        '--disable-gpu',
+        '--disable-software-rasterizer',
+        '--no-zygote',
+        '--disable-background-timers-throttling',
+        '--disable-renderer-backgrounding',
+        '--disable-backgrounding-occluded-windows',
+        '--disable-breakpad',
+        '--disable-sync',
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-features=site-per-process',
       ],
     });
 
@@ -39,12 +39,15 @@ class Browser {
 
   async setupPage(page) {
     await page.setUserAgent(
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36"
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36'
     );
 
+    page.setDefaultTimeout(30000);
+    page.setDefaultNavigationTimeout(30000);
+
     await page.setRequestInterception(true);
-    page.on("request", (req) => {
-      if (["image", "stylesheet", "font"].includes(req.resourceType())) {
+    page.on('request', (req) => {
+      if (['image', 'stylesheet', 'font'].includes(req.resourceType())) {
         req.abort();
       } else {
         req.continue();
@@ -53,14 +56,14 @@ class Browser {
   }
 
   async openPage(url) {
-    if (!await this.isBrowserAlive()) {
+    if (!(await this.isBrowserAlive())) {
       await this.setup();
     }
 
     try {
       const page = await this.browser.newPage();
       await this.setupPage(page);
-      await page.goto(url);
+      await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 });
       await page.setViewport({ width: 1600, height: 900 });
       return page;
     } catch (error) {
@@ -68,7 +71,7 @@ class Browser {
       await this.setup();
       const page = await this.browser.newPage();
       await this.setupPage(page);
-      await page.goto(url);
+      await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 });
       await page.setViewport({ width: 1600, height: 900 });
       return page;
     }
@@ -79,7 +82,7 @@ class Browser {
       if (page && !page.isClosed()) {
         await page.close();
       }
-    } catch { }
+    } catch {}
   }
 
   async closeBrowser() {
@@ -88,7 +91,7 @@ class Browser {
         await this.browser.close();
         this.browser = null;
       }
-    } catch { }
+    } catch {}
   }
 }
 
