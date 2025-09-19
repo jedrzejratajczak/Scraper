@@ -4,6 +4,10 @@ import scrapG from './scrapers/scrapG.js';
 import scrapH from './scrapers/scrapH.js';
 import scrapT from './scrapers/scrapT.js';
 import scrapVC from './scrapers/scrapVC.js';
+import scrapVCB from './scrapers/scrapVCB.js';
+import scrapVCH from './scrapers/scrapVCH.js';
+import scrapVCY from './scrapers/scrapVCY.js';
+import scrapP from './scrapers/scrapP.js';
 
 const config = {
   e: {
@@ -45,6 +49,26 @@ const config = {
     channel: process.env.VC_CHANNEL,
     url: process.env.VC_URL,
     scraper: scrapVC,
+  },
+  vcb: {
+    channel: process.env.VCB_CHANNEL,
+    url: process.env.VCB_URL,
+    scraper: scrapVCB,
+  },
+  vch: {
+    channel: process.env.VCH_CHANNEL,
+    url: process.env.VCH_URL,
+    scraper: scrapVCH,
+  },
+  vcy: {
+    channel: process.env.VCY_CHANNEL,
+    url: process.env.VCY_URL,
+    scraper: scrapVCY,
+  },
+  p: {
+    channel: process.env.P_CHANNEL,
+    url: process.env.P_URL,
+    scraper: scrapP,
   },
 };
 
