@@ -27,6 +27,8 @@ let memory = null;
 let browser = null;
 
 while (true) {
+  let lastUrl = null;
+
   try {
     bot = new DiscordBot(config);
     memory = new Memory();
@@ -36,6 +38,7 @@ while (true) {
       const configEntries = Object.entries(config).sort(() => Math.random() - 0.5);
 
       for (const [key, { url, scraper }] of configEntries) {
+        lastUrl = url;
         const page = await browser.openPage(url);
         const products = await scrap(page, scraper);
         await browser.closePage(page);
@@ -51,7 +54,7 @@ while (true) {
     await bot?.destroy();
     await memory?.close();
 
-    addLog(error);
+    addLog(`${error} ${lastUrl}`);
 
     await new Promise((resolve) => setTimeout(resolve, 5000));
   }
