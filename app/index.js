@@ -47,7 +47,9 @@ while (true) {
         await bot.sendProducts(key, newProducts);
       }
 
-      await new Promise((resolve) => setTimeout(resolve, 60000));
+      const totalWaitTimeMs = 15 * 60 * 1000;
+      const delayBetweenCycles = Math.floor(totalWaitTimeMs / configEntries.length);
+      await new Promise((resolve) => setTimeout(resolve, delayBetweenCycles));
     }
   } catch (error) {
     await browser?.closeBrowser();
