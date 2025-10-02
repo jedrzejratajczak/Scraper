@@ -40,6 +40,11 @@ while (true) {
       for (const [key, { url, scraper }] of configEntries) {
         lastUrl = url;
         const page = await browser.openPage(url);
+
+        if (!page) {
+          continue;
+        }
+
         const products = await scrap(page, scraper);
         await browser.closePage(page);
 
@@ -56,7 +61,7 @@ while (true) {
     await bot?.destroy();
     await memory?.close();
 
-    addLog(`${error} ${lastUrl}`);
+    addLog(`App stopped. URL: ${lastUrl} | Error: ${error}`);
 
     await new Promise((resolve) => setTimeout(resolve, 5000));
   }

@@ -60,20 +60,17 @@ class Browser {
       await this.setup();
     }
 
+    let page;
     try {
-      const page = await this.browser.newPage();
+      page = await this.browser.newPage();
       await this.setupPage(page);
       await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 });
       await page.setViewport({ width: 1600, height: 900 });
       return page;
     } catch (error) {
-      this.browser = null;
-      await this.setup();
-      const page = await this.browser.newPage();
-      await this.setupPage(page);
-      await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 });
-      await page.setViewport({ width: 1600, height: 900 });
-      return page;
+      this.closePage(page);
+      addLog(`Page failed to open, skipping. URL: ${url} | Error: ${error}`);
+      return null;
     }
   }
 
