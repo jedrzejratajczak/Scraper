@@ -6,10 +6,12 @@ class DiscordBot {
     this.client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers] });
     this.client.login(process.env.DISCORD_TOKEN);
     this.channels = {};
+    this.roles = {};
 
     this.client.once(Events.ClientReady, (readyClient) => {
-      Object.entries(config).forEach(([key, { channel }]) => {
+      Object.entries(config).forEach(([key, { channel, role }]) => {
         this.channels[key] = this.client.channels.cache.get(channel);
+        this.roles[key] = role;
       });
 
       console.log(`Ready! Logged in as ${readyClient.user.tag}`);
@@ -45,12 +47,22 @@ class DiscordBot {
 
   async sendProducts(key, products) {
     const channel = this.channels[key];
+    const role = this.roles[key];
+
     if (!channel || products.length === 0) return;
 
     const embeds = products.map((product) => makeEmbed(product));
     const embedChunks = chunkArray(embeds, 5);
 
-    await Promise.all(embedChunks.map((chunk) => channel.send({ embeds: chunk })));
+    await Promise.all(
+      embedChunks.map((chunk, index) => {
+        const payload = {
+          embeds: chunk,
+          content: index === 0 && role ? `<@&${role}>` : undefined,
+        };
+        return channel.send(payload);
+      })
+    );
   }
 
   async destroy() {
