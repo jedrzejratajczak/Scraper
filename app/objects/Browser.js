@@ -1,4 +1,5 @@
 import puppeteer from 'puppeteer';
+import { addLog } from '../utils';
 
 class Browser {
   constructor() {
