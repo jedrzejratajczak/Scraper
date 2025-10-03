@@ -1,4 +1,4 @@
-import { Client, Events, GatewayIntentBits } from 'discord.js';
+import { Client, EmbedBuilder, Events, GatewayIntentBits } from 'discord.js';
 import { chunkArray, makeEmbed } from '../utils.js';
 
 class DiscordBot {
