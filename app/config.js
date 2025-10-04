@@ -55,6 +55,13 @@ const config = {
     role: process.env.VC_ROLE,
     emoji: process.env.VC_EMOJI,
   },
+  vc0: {
+    channel: process.env.VC0_CHANNEL,
+    url: process.env.VC0_URL,
+    scraper: scrapVC,
+    role: process.env.VC0_ROLE,
+    emoji: process.env.VC0_EMOJI,
+  },
   vc1: {
     channel: process.env.VC1_CHANNEL,
     url: process.env.VC1_URL,
@@ -229,6 +236,20 @@ const config = {
     scraper: scrapVC,
     role: process.env.VC25_ROLE,
     emoji: process.env.VC25_EMOJI,
+  },
+  vc26: {
+    channel: process.env.VC26_CHANNEL,
+    url: process.env.VC26_URL,
+    scraper: scrapVC,
+    role: process.env.VC26_ROLE,
+    emoji: process.env.VC26_EMOJI,
+  },
+  vc27: {
+    channel: process.env.VC27_CHANNEL,
+    url: process.env.VC27_URL,
+    scraper: scrapVC,
+    role: process.env.VC27_ROLE,
+    emoji: process.env.VC27_EMOJI,
   },
 };
 
