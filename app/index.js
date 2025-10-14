@@ -52,7 +52,8 @@ while (true) {
         await bot.sendProducts(key, newProducts);
       }
 
-      await new Promise((resolve) => setTimeout(resolve, 5 * 60 * 1000)); // 5 minutes delay between cycles
+      addLog('Cycle finished');
+      await new Promise((resolve) => setTimeout(resolve, 1 * 60 * 1000)); // 1 minute delay between cycles
     }
   } catch (error) {
     await browser?.closeBrowser();
