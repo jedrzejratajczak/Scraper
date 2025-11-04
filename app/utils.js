@@ -3,7 +3,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { EmbedBuilder } from 'discord.js';
 
-const chunkArray = (array, chunkSize) => {
+function chunkArray (array, chunkSize) {
   const chunks = [];
 
   for (let i = 0; i < array.length; i += chunkSize) {
@@ -13,7 +13,7 @@ const chunkArray = (array, chunkSize) => {
   return chunks;
 };
 
-const isValidUrl = (url) => {
+function isValidUrl (url) {
   try {
     new URL(url);
     return true;
@@ -22,7 +22,7 @@ const isValidUrl = (url) => {
   }
 };
 
-const makeEmbed = ({ src = 'Brak', price = 'Brak', title = 'Brak', productId = 'Brak', href = 'Brak' }) => {
+function makeEmbed({ src = 'Brak', price = 'Brak', title = 'Brak', productId = 'Brak', href = 'Brak' }) {
   const embed = new EmbedBuilder()
     .setColor(0x0099ff)
     .setTitle(title)
@@ -30,18 +30,13 @@ const makeEmbed = ({ src = 'Brak', price = 'Brak', title = 'Brak', productId = '
     .setTimestamp()
     .addFields({ name: 'Cena', value: price });
 
-  if (isValidUrl(src)) {
-    embed.setThumbnail(src);
-  }
-
-  if (isValidUrl(href)) {
-    embed.setURL(href).addFields({ name: 'Url', value: href });
-  }
+  if (isValidUrl(src)) embed.setThumbnail(src);
+  if (isValidUrl(href)) embed.setURL(href);
 
   return embed;
 };
 
-const addLog = (content) => {
+function addLog(content) {
   const dirname = path.dirname(fileURLToPath(import.meta.url));
   const filePath = path.join(dirname, '../logs.txt');
   const timestamp = new Date().toISOString();
@@ -54,4 +49,34 @@ const addLog = (content) => {
   }
 };
 
-export { chunkArray, makeEmbed, addLog };
+async function fetcher({ urls, headers, selectors }) {
+  const cheerio = await import('cheerio');
+  const allProducts = [];
+
+  for (const url of urls) {
+    const response = await fetch(url, { headers });
+    const html = await response.text();
+    const $ = cheerio.load(html);
+
+    const items = $(selectors.list);
+
+    items.each((_, element) => {
+      const item = $(element);
+      const product = {
+        src: selectors.src(item),
+        price: selectors.price(item),
+        title: selectors.title(item),
+        href: selectors.href(item),
+        productId: selectors.productId(item)
+      };
+
+      if (product.productId) {
+        allProducts.push(product);
+      }
+    });
+  }
+
+  return allProducts;
+}
+
+export { chunkArray, makeEmbed, addLog, fetcher };

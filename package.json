@@ -1,14 +1,13 @@
 {
-  "name": "scraper",
+  "name": "bot",
   "main": "index.js",
   "dependencies": {
-    "discord.js": "^14.22.1",
-    "puppeteer": "^24.21.0",
+    "cheerio": "^1.1.2",
+    "discord.js": "^14.24.2",
     "sqlite3": "^5.1.7"
   },
-  "devDependencies": {
-    "@eslint/js": "^9.35.0",
-    "eslint": "^9.35.0",
-    "globals": "^16.4.0"
+  "scripts": {
+    "debug": "bun app/debug/DEBUG_SCRIPT.js",
+    "start": "bun app/index.js"
   }
 }

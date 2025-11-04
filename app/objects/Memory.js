@@ -27,7 +27,7 @@ class Memory {
 
   async updateProducts(key, products) {
     const timestamp = Date.now();
-    const delay = timestamp - 48 * 60 * 60 * 1000;
+    const delay = timestamp - 72 * 60 * 60 * 1000;
     const newProducts = [];
 
     const dbGet = promisify(this.#db.get.bind(this.#db));

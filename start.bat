@@ -1,5 +1,5 @@
 @echo off
-echo Started scraping...
+echo Started app...
 echo.
 
 bun app\index.js

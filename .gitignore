@@ -1,5 +1,5 @@
 .env
-products.db
 logs.txt
-products.db-journal
 node_modules/
+products.db
+products.db-journal
