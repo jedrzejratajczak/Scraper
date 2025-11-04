@@ -23,23 +23,7 @@ async function getProducts(url) {
     })
   });
 
-  const rawText = await response.text();
-
-  let data;
-  try {
-    data = JSON.parse(rawText);
-  } catch (error) {
-    const errorDetails = {
-      message: 'Failed to parse JSON response',
-      parseError: error.message,
-      httpStatus: `${response.status} ${response.statusText}`,
-      contentType: response.headers.get('content-type'),
-      contentLength: rawText.length,
-      responsePreview: rawText.substring(0, 500),
-      url: url
-    };
-    throw new Error(JSON.stringify(errorDetails, null, 2));
-  }
+  const data = await response.json();
 
   return data.articles
     .filter(article => article.articleNumber)
