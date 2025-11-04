@@ -27,7 +27,7 @@ while (true) {
       }
 
       // 2 minutes delay between cycles
-      await new Promise((resolve) => setTimeout(resolve, 1 * 60 * 1000));
+      await new Promise((resolve) => setTimeout(resolve, 2 * 60 * 1000));
     }
   } catch (error) {
     await bot?.destroy();
