@@ -1,6 +1,6 @@
 import config from '../config';
 
-const key = 'vc';
+const key = 'h';
 
 const { url, getProducts } = config[key];
 const products = await getProducts(url);
