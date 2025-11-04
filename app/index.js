@@ -30,6 +30,7 @@ while (true) {
       await new Promise((resolve) => setTimeout(resolve, 2 * 60 * 1000));
     }
   } catch (error) {
+    await bot?.sendError(lastKey, error);
     await bot?.destroy();
     await memory?.close();
 

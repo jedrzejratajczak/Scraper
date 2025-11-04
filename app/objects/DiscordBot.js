@@ -55,6 +55,24 @@ class DiscordBot {
     channel.send({ embeds: [embed] });
   }
 
+  async sendError(key, error) {
+    try {
+      const channel = this.client.channels.cache.get(process.env.LOGS_CHANNEL);
+      if (!channel) return;
+
+      const embed = new EmbedBuilder()
+        .setColor('Red')
+        .setTitle('⚠️ App Error')
+        .addFields(
+          { name: 'Key', value: key || 'Unknown' },
+          { name: 'Error', value: error.toString().substring(0, 1024) }
+        )
+        .setTimestamp();
+
+      await channel.send({ embeds: [embed] });
+    } catch {}
+  }
+
   async sendProducts(key, products) {
     const channel = this.channels[key];
     const role = this.roles[key];
