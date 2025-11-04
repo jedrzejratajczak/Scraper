@@ -1,5 +1,5 @@
 import { Client, EmbedBuilder, Events, GatewayIntentBits, Partials } from 'discord.js';
-import { chunkArray, makeEmbed } from '../utils.js';
+import { chunkArray, makeEmbed } from '../utils';
 
 class DiscordBot {
   constructor(config) {
