@@ -149,8 +149,8 @@ class DiscordBot {
 
     const embed = new EmbedBuilder()
       .setColor('Blue')
-      .setTitle(process.env.ROLES_TITLE)
-      .setDescription(process.env.ROLES_DESCRIPTION);
+      .setTitle("Wybierz swoje role i odbieraj tylko te powiadomienia, które Cię interesują!")
+      .setDescription("Na Discordzie nie ma spamu - to Ty decydujesz, o czym chcesz być informowany.\nPo kliknięciu \"Kliknij tutaj i wybierz powiadomienia\" pojawią się dwa okna z możliwością wyboru.\nMożna wybrać dowolną liczbę kategorii.\nJedno ma limit 25 kategorii, dlatego wybieramy w 2 oknach");
 
     const button = new ButtonBuilder()
       .setCustomId("setup_roles")
