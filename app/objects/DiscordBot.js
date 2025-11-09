@@ -1,4 +1,16 @@
-import { Client, EmbedBuilder, Events, GatewayIntentBits, Partials } from 'discord.js';
+import {
+  Client,
+  EmbedBuilder,
+  Events,
+  GatewayIntentBits,
+  Partials,
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+  StringSelectMenuBuilder,
+  StringSelectMenuOptionBuilder,
+  MessageFlags,
+} from 'discord.js';
 import { chunkArray, makeEmbed } from '../utils';
 
 class DiscordBot {
@@ -8,17 +20,11 @@ class DiscordBot {
       partials: [Partials.Message, Partials.Reaction],
     });
     this.client.login(process.env.DISCORD_TOKEN);
-    this.channels = {};
-    this.roles = {};
-    this.emojis = {};
-    this.emojiToRole = {};
+    this.config = config;
 
     this.client.once(Events.ClientReady, (readyClient) => {
-      Object.entries(config).forEach(([key, { channel, role, emoji }]) => {
-        this.channels[key] = this.client.channels.cache.get(channel);
-        this.roles[key] = role;
-        this.emojis[key] = emoji;
-        this.emojiToRole[emoji] = role;
+      Object.values(this.config).forEach((data) => {
+        data.channelUrl = this.client.channels.cache.get(data.channel);
       });
 
       this.setupRolesMessage();
@@ -27,8 +33,7 @@ class DiscordBot {
 
     this.client.on(Events.GuildMemberAdd, (member) => this.sendJoinLeave(member, true));
     this.client.on(Events.GuildMemberRemove, (member) => this.sendJoinLeave(member, false));
-    this.client.on(Events.MessageReactionAdd, (reaction, user) => this.handleReaction(reaction, user, true));
-    this.client.on(Events.MessageReactionRemove, (reaction, user) => this.handleReaction(reaction, user, false));
+    this.client.on(Events.InteractionCreate, (interaction) => this.handleInteraction(interaction));
   }
 
   getAccountAge(createdAt) {
@@ -74,10 +79,9 @@ class DiscordBot {
   }
 
   async sendProducts(key, products) {
-    const channel = this.channels[key];
-    const role = this.roles[key];
+    const { channelUrl, role } = this.config[key];
 
-    if (!channel || products.length === 0) return;
+    if (!channelUrl || products.length === 0) return;
 
     const embeds = products.map((product) => makeEmbed(product));
     const embedChunks = chunkArray(embeds, 5);
@@ -88,9 +92,56 @@ class DiscordBot {
           embeds: chunk,
           content: index === 0 && role ? `<@&${role}>` : undefined,
         };
-        return channel.send(payload);
+        return channelUrl.send(payload);
       })
     );
+  }
+
+  getRoleOptions(interaction, member) {
+    return Object.values(this.config)
+      .filter(({ role }) => role)
+      .map(({ role: roleId, emoji }) => {
+        const role = interaction.guild.roles.cache.get(roleId);
+        const hasRole = member.roles.cache.has(roleId);
+
+        const option = new StringSelectMenuOptionBuilder()
+          .setLabel(role.name)
+          .setValue(roleId)
+          .setDescription(`Włącz powiadomienia dla ${role?.name}`)
+          .setDefault(hasRole);
+
+        if (emoji) option.setEmoji(emoji);
+
+        return option;
+      });
+  }
+
+  createRoleSelectComponents(roleOptions) {
+    const chunks = [];
+    for (let i = 0; i < roleOptions.length; i += 25) {
+      chunks.push(roleOptions.slice(i, i + 25));
+    }
+
+    return chunks.map((chunk, index) => {
+      const selectMenu = new StringSelectMenuBuilder()
+        .setCustomId(`role_select_${index}`)
+        .setPlaceholder(`Wybierz powiadomienia (${index + 1}/${chunks.length})`)
+        .setMinValues(0)
+        .setMaxValues(chunk.length)
+        .addOptions(chunk);
+
+      return new ActionRowBuilder().addComponents(selectMenu);
+    });
+  }
+
+  getRoleSelectionMessage(roleOptions, interaction) {
+    const currentRoles = roleOptions
+      .filter((opt) => opt.data.default)
+      .map((opt) => interaction.guild.roles.cache.get(opt.data.value)?.name || opt.data.value);
+
+    return currentRoles.length > 0
+      ? `**Obecne powiadomienia:** ${currentRoles.join(", ")}\n\nWybierz powiadomienia, które chcesz otrzymywać (odznacz, aby usunąć):`
+      : "Wybierz powiadomienia, które chcesz otrzymywać:";
   }
 
   async setupRolesMessage() {
@@ -101,75 +152,72 @@ class DiscordBot {
       .setTitle(process.env.ROLES_TITLE)
       .setDescription(process.env.ROLES_DESCRIPTION);
 
+    const button = new ButtonBuilder()
+      .setCustomId("setup_roles")
+      .setLabel("Kliknij tutaj i wybierz powiadomienia")
+      .setStyle(ButtonStyle.Primary);
+
+    const row = new ActionRowBuilder().addComponents(button);
+
     const message = await channel.messages.fetch(process.env.ROLES_MESSAGE_ID);
-    await message.edit({ embeds: [embed] });
-
-    const message2 = await channel.messages.fetch(process.env.ROLES_MESSAGE_ID_2);
-    await message2.edit({ content: '.' });
-
-    const allEmojis = Object.values(this.emojis).filter((e) => e);
-
-    const existingReactions1 = message.reactions.cache.map((r) => r.emoji.id || r.emoji.name);
-    const existingReactions2 = message2.reactions.cache.map((r) => r.emoji.id || r.emoji.name);
-
-    for (const emojiKey of existingReactions1) {
-      if (!allEmojis.includes(emojiKey)) {
-        const reaction = message.reactions.cache.find((r) => (r.emoji.id || r.emoji.name) === emojiKey);
-        await reaction.remove();
-      }
-    }
-
-    for (const emojiKey of existingReactions2) {
-      if (!allEmojis.includes(emojiKey)) {
-        const reaction = message2.reactions.cache.find((r) => (r.emoji.id || r.emoji.name) === emojiKey);
-        await reaction.remove();
-      }
-    }
-
-    const currentReactions1 = message.reactions.cache.map((r) => r.emoji.id || r.emoji.name);
-    const currentReactions2 = message2.reactions.cache.map((r) => r.emoji.id || r.emoji.name);
-    const allCurrentReactions = [...currentReactions1, ...currentReactions2];
-
-    for (const emojiId of allEmojis) {
-      if (allCurrentReactions.includes(emojiId)) continue;
-
-      if (currentReactions1.length < 20) {
-        await message.react(emojiId);
-        currentReactions1.push(emojiId);
-      } else {
-        await message2.react(emojiId);
-        currentReactions2.push(emojiId);
-      }
-    }
+    await message.edit({ embeds: [embed], components: [row] });
   }
 
-  async handleReaction(reaction, user, added) {
-    if (user.bot) return;
-    if (reaction.partial) await reaction.fetch();
+  async handleInteraction(interaction) {
+    const member = interaction.member;
 
-    const messageId = process.env.ROLES_MESSAGE_ID;
-    const messageId2 = process.env.ROLES_MESSAGE_ID_2;
-    if (reaction.message.id !== messageId && reaction.message.id !== messageId2) return;
+    if (interaction.isButton() && interaction.customId === "setup_roles") {
+      const roleOptions = this.getRoleOptions(interaction, member);
+      const rows = this.createRoleSelectComponents(roleOptions);
+      const contentMessage = this.getRoleSelectionMessage(roleOptions, interaction);
 
-    const emojiKey = reaction.emoji.id || reaction.emoji.name;
-    const roleId = this.emojiToRole[emojiKey];
-    if (!roleId) return;
+      await interaction.reply({
+        content: contentMessage,
+        components: rows.slice(0, 5),
+        flags: MessageFlags.Ephemeral,
+      });
 
-    const member = await reaction.message.guild.members.fetch(user.id);
+      setTimeout(async () => {
+        try { await interaction.deleteReply() } catch {}
+      }, 300000);
+    } else if (
+      interaction.isStringSelectMenu() &&
+      interaction.customId.startsWith("role_select")
+    ) {
+      await interaction.deferUpdate();
 
-    if (added) {
-      await member.roles.add(roleId);
-    } else {
-      await member.roles.remove(roleId);
+      const selectedRoleIds = interaction.values;
+
+      const dropdownIndex = parseInt(interaction.customId.split("_")[2]);
+
+      const allRoleOptions = this.getRoleOptions(interaction, member);
+      const roleChunks = [];
+      for (let i = 0; i < allRoleOptions.length; i += 25) {
+        roleChunks.push(allRoleOptions.slice(i, i + 25));
+      }
+
+      const currentDropdownRoleIds = roleChunks[dropdownIndex].map(opt => opt.data.value);
+
+      const rolesToRemove = currentDropdownRoleIds.filter((roleId) => !selectedRoleIds.includes(roleId));
+
+      for (const roleId of selectedRoleIds) {
+        if (!member.roles.cache.has(roleId)) await member.roles.add(roleId);
+      }
+
+      for (const roleId of rolesToRemove) {
+        if (member.roles.cache.has(roleId)) await member.roles.remove(roleId);
+      }
+
+      const roleOptions = this.getRoleOptions(interaction, member);
+      const rows = this.createRoleSelectComponents(roleOptions);
+      const contentMessage = this.getRoleSelectionMessage(roleOptions, interaction);
+
+      await interaction.editReply({ content: contentMessage, components: rows.slice(0, 5) });
     }
   }
 
   async destroy() {
-    try {
-      if (this.client) {
-        this.client.destroy();
-      }
-    } catch {}
+    try { if (this.client) this.client.destroy() } catch {}
   }
 }
 
