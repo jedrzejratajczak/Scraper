@@ -76,6 +76,20 @@ const config = {
     role: process.env.VC2_ROLE,
     emoji: process.env.VC2_EMOJI,
   },
+  vc2a: {
+    channel: process.env.VC2A_CHANNEL,
+    url: process.env.VC2A_URL,
+    getProducts: VC,
+    role: process.env.VC2A_ROLE,
+    emoji: process.env.VC2A_EMOJI,
+  },
+  vc2b: {
+    channel: process.env.VC2B_CHANNEL,
+    url: process.env.VC2B_URL,
+    getProducts: VC,
+    role: process.env.VC2B_ROLE,
+    emoji: process.env.VC2B_EMOJI,
+  },
   vc3: {
     channel: process.env.VC3_CHANNEL,
     url: process.env.VC3_URL,
