@@ -265,6 +265,48 @@ const config = {
     role: process.env.VC27_ROLE,
     emoji: process.env.VC27_EMOJI,
   },
+  vc28: {
+    channel: process.env.VC28_CHANNEL,
+    url: process.env.VC28_URL,
+    getProducts: VC,
+    role: process.env.VC28_ROLE,
+    emoji: process.env.VC28_EMOJI,
+  },
+  vc29: {
+    channel: process.env.VC29_CHANNEL,
+    url: process.env.VC29_URL,
+    getProducts: VC,
+    role: process.env.VC29_ROLE,
+    emoji: process.env.VC29_EMOJI,
+  },
+  vc30: {
+    channel: process.env.VC30_CHANNEL,
+    url: process.env.VC30_URL,
+    getProducts: VC,
+    role: process.env.VC30_ROLE,
+    emoji: process.env.VC30_EMOJI,
+  },
+  vc31: {
+    channel: process.env.VC31_CHANNEL,
+    url: process.env.VC31_URL,
+    getProducts: VC,
+    role: process.env.VC31_ROLE,
+    emoji: process.env.VC31_EMOJI,
+  },
+  vc32: {
+    channel: process.env.VC32_CHANNEL,
+    url: process.env.VC32_URL,
+    getProducts: VC,
+    role: process.env.VC32_ROLE,
+    emoji: process.env.VC32_EMOJI,
+  },
+  vc33: {
+    channel: process.env.VC33_CHANNEL,
+    url: process.env.VC33_URL,
+    getProducts: VC,
+    role: process.env.VC33_ROLE,
+    emoji: process.env.VC33_EMOJI,
+  },
 };
 
 export default config;

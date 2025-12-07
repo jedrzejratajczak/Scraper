@@ -33,6 +33,8 @@ class Memory {
     const dbGet = promisify(this.#db.get.bind(this.#db));
     const dbRun = promisify(this.#db.run.bind(this.#db));
 
+    const isVC = key.startsWith('vc');
+
     for (const product of products) {
       const existing = await dbGet('SELECT timestamp FROM products WHERE key = ? AND productId = ?', [
         key,
@@ -62,8 +64,14 @@ class Memory {
         ]
       );
 
-      if (!existing || existing.timestamp < delay) {
-        newProducts.push(product);
+      if (isVC) {
+        if (!existing) {
+          newProducts.push(product);
+        }
+      } else {
+        if (!existing || existing.timestamp < delay) {
+          newProducts.push(product);
+        }
       }
     }
 
