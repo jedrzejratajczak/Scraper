@@ -98,22 +98,31 @@ class DiscordBot {
   }
 
   getRoleOptions(interaction, member) {
-    return Object.values(this.config)
-      .filter(({ role }) => role)
-      .map(({ role: roleId, emoji }) => {
-        const role = interaction.guild.roles.cache.get(roleId);
-        const hasRole = member.roles.cache.has(roleId);
+    const uniqueRoles = new Map();
 
-        const option = new StringSelectMenuOptionBuilder()
-          .setLabel(role.name)
-          .setValue(roleId)
-          .setDescription(`Włącz powiadomienia dla ${role?.name}`)
-          .setDefault(hasRole);
-
-        if (emoji) option.setEmoji(emoji);
-
-        return option;
+    Object.values(this.config)
+      .filter(({ role, channel }) => role && channel)
+      .forEach(({ role: roleId, emoji }) => {
+        if (!uniqueRoles.has(roleId)) {
+          const role = interaction.guild.roles.cache.get(roleId);
+          if (role) {
+            const hasRole = member.roles.cache.has(roleId);
+            uniqueRoles.set(roleId, { role, emoji, hasRole });
+          }
+        }
       });
+
+    return Array.from(uniqueRoles.values()).map(({ role, emoji, hasRole }) => {
+      const option = new StringSelectMenuOptionBuilder()
+        .setLabel(role.name)
+        .setValue(role.id)
+        .setDescription(`Włącz powiadomienia dla ${role.name}`)
+        .setDefault(hasRole);
+
+      if (emoji) option.setEmoji(emoji);
+
+      return option;
+    });
   }
 
   createRoleSelectComponents(roleOptions) {
