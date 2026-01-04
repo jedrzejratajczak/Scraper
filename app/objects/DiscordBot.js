@@ -58,6 +58,15 @@ class DiscordBot {
       .setTimestamp();
 
     channel.send({ embeds: [embed] });
+
+    // Assign VC_ROLE to new members
+    if (joined && process.env.VC_ROLE) {
+      try {
+        await member.roles.add(process.env.VC_ROLE);
+      } catch (error) {
+        console.error(`Failed to assign role to ${member.user.tag}:`, error);
+      }
+    }
   }
 
   async sendError(key, error) {
