@@ -59,18 +59,8 @@ class DiscordBot {
 
     channel.send({ embeds: [embed] });
 
-    // Assign VC_ROLE to new members
-    if (joined && process.env.VC_ROLE) {
-      try {
-        const role = member.guild.roles.cache.get(process.env.VC_ROLE);
-        if (role) {
-          await member.roles.add(role);
-        } else {
-          console.error(`Role ${process.env.VC_ROLE} not found in guild`);
-        }
-      } catch (error) {
-        console.error(`Failed to assign role ${process.env.VC_ROLE} to ${member.user.tag}:`, error);
-      }
+    if (joined) {
+      await member.roles.add(process.env.VC_ROLE);
     }
   }
 
